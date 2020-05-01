@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"sync"
 	"text/template"
@@ -19,9 +20,18 @@ type templateHandler struct {
 }
 
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	t.once.Do(func() {
-		t.template = template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
-	})
+	loadCompileTemplate := func() *template.Template {
+		return template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+	}
+
+	if os.Getenv("DEBUG") == "true" {
+		t.template = loadCompileTemplate()
+	} else {
+		t.once.Do(func() {
+			t.template = loadCompileTemplate()
+		})
+	}
+
 	t.template.Execute(w, nil)
 }
 
