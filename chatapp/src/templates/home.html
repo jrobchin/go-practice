@@ -1,0 +1,59 @@
+<html>
+
+<head>
+  <title>Welcome to JChat</title>
+  <style>
+    input {
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Let's chat</h1>
+  <ul id="messages"></ul>
+  <form action="" id="chatbox">
+    <textarea></textarea>
+    <input type="submit" value="Send" />
+  </form>
+  <script>
+    window.onload = () => {
+      var socket = null;
+      var msgBox = document.querySelector("#chatbox textarea");
+      var messages = document.getElementById("messages");
+
+      document.getElementById("chatbox").onsubmit = function (e) {
+        e.preventDefault();
+        if (!msgBox.value) return false;
+        if (!socket) {
+          alert("Error: There is no socket connection.");
+          return false;
+        }
+        socket.send(msgBox.value);
+        msgBox.value = "";
+        return false;
+      };
+
+      if (!window["WebSocket"]) {
+        alert("Error: Your browser does not support web sockets.")
+      } else {
+        socket = new WebSocket("ws://localhost:8080/room");
+        socket.onclose = function () {
+          console.error("Connection has been closed.");
+        }
+        socket.onmessage = function (e) {
+          var msgElement = document.createElement("li");
+          msgElement.innerText = e.data;
+
+          messages.append(msgElement);
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
