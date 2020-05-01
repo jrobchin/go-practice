@@ -3,10 +3,11 @@ package main
 import (
 	"log"
 	"net/http"
-	"strings"
+	"os"
+
+	"github.com/jrobchin/go-practice/chatapp/internal/trace"
 
 	"github.com/gorilla/websocket"
-	"github.com/jrobchin/chatapp/internal/trace"
 )
 
 const (
@@ -28,6 +29,7 @@ func newRoom() *room {
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
+		tracer:  trace.New(os.Stdout),
 	}
 }
 
@@ -35,11 +37,7 @@ var upgrader = &websocket.Upgrader{
 	ReadBufferSize:  socketBufferSize,
 	WriteBufferSize: messageBufferSize,
 	CheckOrigin: func(r *http.Request) bool {
-		var hostParts []string = strings.SplitN(r.Host, ":", 3)
-		if hostParts[0] == "localhost" {
-			return true
-		}
-		return false
+		return true
 	},
 }
 

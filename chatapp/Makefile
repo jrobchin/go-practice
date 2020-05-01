@@ -1,7 +1,7 @@
 .PHONY: build run
 
 build:
-	cd src && go build -o ../build/chat
+	go build -o ./build/chat ./cmd/chat
 
 run:
-	make build && cd src && ../build/chat -addr :8080
+	make build && ./build/chat -addr :8080

@@ -22,7 +22,7 @@ type templateHandler struct {
 
 func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	loadCompileTemplate := func() *template.Template {
-		return template.Must(template.ParseFiles(filepath.Join("templates", t.filename)))
+		return template.Must(template.ParseFiles(filepath.Join("cmd", "chat", "templates", t.filename)))
 	}
 
 	if os.Getenv("DEBUG") == "true" {

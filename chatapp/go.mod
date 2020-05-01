@@ -1,4 +1,4 @@
-module github.com/jrobchin/chatapp
+module github.com/jrobchin/go-practice/chatapp
 
 go 1.14
 
