@@ -14,8 +14,8 @@
 </head>
 
 <body>
-  <h1>Let's chat</h1>
   <ul id="messages"></ul>
+  <h1>Let's chat</h1>
   <form action="" id="chatbox">
     <textarea></textarea>
     <input type="submit" value="Send" />
@@ -41,7 +41,7 @@
       if (!window["WebSocket"]) {
         alert("Error: Your browser does not support web sockets.")
       } else {
-        socket = new WebSocket("ws://localhost:8080/room");
+        socket = new WebSocket("ws://{{.Host}}/room");
         socket.onclose = function () {
           console.error("Connection has been closed.");
         }
