@@ -23,6 +23,7 @@ func (c *client) read() {
 		}
 		msg.When = time.Now()
 		msg.Name = c.userData["name"].(string)
+		msg.AvatarURL = c.userData["avatar_url"].(string)
 		c.room.forward <- msg
 	}
 }

@@ -19,7 +19,7 @@
   <form action="" id="chatbox">
     {{.UserData.name}}:<br/>
     <textarea></textarea>
-    <input type="submit" value="Send" />
+    <input type="submit" value="Send" /> or <a href="/logout">Log out</a> 
   </form>
   <script>
     window.onload = () => {
@@ -50,15 +50,9 @@
           var msg = JSON.parse(e.data);
           var msgElement = document.createElement("li");
           
-          var userElem = document.createElement("strong");
-          userElem.innerText = `${msg.Name}: `
-          msgElement.append(
-            userElem
-          );
-
-          var msgTextElem = document.createElement("span");
-          msgTextElem.innerText = msg.Message;
-          msgElement.append(msgTextElem);
+          msgElement.innerHTML = `
+            <img src="${msg.AvatarURL}" style="width:50; verticalAlign:middle"><strong>${msg.Name}:</strong> <span>${msg.Message}</span>
+          `
 
           messages.append(msgElement);
         }

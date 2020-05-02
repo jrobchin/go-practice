@@ -70,6 +70,7 @@ func main() {
 	// Assign handlers to paths
 	http.Handle("/", MustAuth(&templateHandler{filename: "home.html"}))
 	http.Handle("/login", &templateHandler{filename: "login.html"})
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/auth/", loginHandler)
 	http.Handle("/room", r)
 
