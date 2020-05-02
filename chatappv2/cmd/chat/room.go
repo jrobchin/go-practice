@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/jrobchin/go-practice/chatapp/internal/trace"
+	"github.com/jrobchin/go-practice/chatappv2/internal/trace"
 
 	"github.com/gorilla/websocket"
 )
