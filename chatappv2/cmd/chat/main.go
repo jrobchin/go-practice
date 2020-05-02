@@ -10,6 +10,8 @@ import (
 	"sync"
 	"text/template"
 
+	"github.com/stretchr/objx"
+
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 
@@ -30,7 +32,6 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	loadCompileTemplate := func() *template.Template {
 		return template.Must(template.ParseFiles(filepath.Join("cmd", "chat", "templates", t.filename)))
 	}
-
 	if os.Getenv("DEBUG") == "true" {
 		t.template = loadCompileTemplate()
 	} else {
@@ -39,7 +40,14 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	t.template.Execute(w, r)
+	context := map[string]interface{}{
+		"Host": r.Host,
+	}
+	if authCookie, err := r.Cookie("auth"); err == nil {
+		context["UserData"] = objx.MustFromBase64(authCookie.Value)
+	}
+
+	t.template.Execute(w, context)
 }
 
 func main() {
