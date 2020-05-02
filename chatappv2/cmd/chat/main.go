@@ -2,12 +2,18 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"sync"
 	"text/template"
+
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/google"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 /*
@@ -41,12 +47,22 @@ func main() {
 	addr := flag.String("addr", ":8080", "The server addr.")
 	flag.Parse()
 
+	// Setup OAuth2
+	gomniauth.SetSecurityKey(os.Getenv("OAUTH_SECURITY_KEY"))
+	gomniauth.WithProviders(
+		google.New(os.Getenv("GOOGLE_OAUTH_CLIENT_ID"), os.Getenv("GOOGLE_OAUTH_SECRET"),
+			fmt.Sprintf("%s://%s:%s/auth/callback/google", os.Getenv("PROTOCOL"), os.Getenv("HOST"), os.Getenv("PORT")),
+		),
+	)
+
 	// Create and run room for chat
 	r := newRoom()
 	go r.run()
 
 	// Assign handlers to paths
-	http.Handle("/", &templateHandler{filename: "home.html"})
+	http.Handle("/", MustAuth(&templateHandler{filename: "home.html"}))
+	http.Handle("/login", &templateHandler{filename: "login.html"})
+	http.HandleFunc("/auth/", loginHandler)
 	http.Handle("/room", r)
 
 	// Start listening
